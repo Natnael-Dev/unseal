@@ -6,7 +6,8 @@ Development is in Phase 1. Original Rust source, four host tests and five compil
 
 ## Start here
 
-- [Product decisions and phases](docs/product-plan.md)
+- [Approved implementation context and design review](docs/context/README.md)
+- [Original product decisions and phases](docs/product-plan.md)
 - [Architecture, stack and judging evidence](docs/architecture.md)
 - [Phase 1 verification and remaining gates](docs/phase-1-status.md)
 - [Screen concept](docs/design/README.md)

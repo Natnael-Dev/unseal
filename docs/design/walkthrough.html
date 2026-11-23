@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unseal design walkthrough</title>
+<style>
+:root{color-scheme:light;--paper:#faf5eb;--panel:#fffcf5;--ink:#202520;--muted:#4d584e;--forest:#12432d;--clay:#913f22;--rule:#d7cebf}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:1rem/1.56 "Instrument Sans",system-ui,sans-serif}header,.bar,main,footer{max-width:1160px;margin:auto;padding:1rem clamp(1rem,4vw,3rem)}header,.bar,nav,.actions{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem 1rem}header{justify-content:space-between;border-bottom:1px solid var(--rule)}nav a,.bar a{display:inline-flex;align-items:center;min-height:44px}a{color:var(--forest);text-underline-offset:.2em}h1,h2,.mark{font-family:"Instrument Serif",Georgia,serif;line-height:1.08}h1{font-size:clamp(2.15rem,5vw,3.8rem);margin:.5rem 0 1rem}h2{font-size:1.65rem;margin:1.35rem 0 .6rem}.mark{font-size:2.35rem;font-weight:bold;text-decoration:none}.bar{font-size:.9rem;color:var(--muted);justify-content:space-between}.spread{display:grid;grid-template-columns:minmax(190px,1fr) minmax(0,1.55fr);align-items:start;gap:clamp(1rem,5vw,4rem)}.cover{width:100%;max-width:380px;margin:0 auto;aspect-ratio:370/430;background:url(unseal-concept.png) 6.5% 24.3%/415.14% 238.14% no-repeat}.panel{padding:clamp(1rem,3vw,2rem);border:1px solid var(--rule);border-radius:8px;background:var(--panel)}.reading,.review{max-width:66ch}.note{border-left:3px solid var(--clay);padding:.15rem 1rem}.small,footer{font-size:.9rem;color:var(--muted)}button,.button,select,input{min-height:44px;font:inherit;border-radius:6px}button,.button{display:inline-flex;align-items:center;padding:.55rem 1rem;background:var(--forest);color:white;border:1px solid var(--forest);cursor:pointer;text-decoration:none;font-weight:600}.secondary{background:var(--panel);color:var(--forest)}select,input{border:1px solid #716a5e;padding:.45rem .6rem;background:white;color:var(--ink);max-width:100%}progress{accent-color:var(--forest);width:100%}label{display:block;font-weight:600}dt{color:var(--muted)}dd{margin:0 0 .65rem} :focus-visible{outline:3px solid #185eb1;outline-offset:3px}footer{margin-top:2rem;border-top:1px solid var(--rule)}.status{color:var(--forest);font-weight:bold}.error{color:var(--clay)}article{margin-bottom:1.5rem}.skip{position:absolute;left:-9999px}.skip:focus{left:1rem;top:1rem;background:white}details{margin:.75rem 0}summary{cursor:pointer;min-height:44px;padding-top:.45rem}button:disabled{background:#ddd;color:#444;border-color:#777;cursor:default}
+@media(max-width:760px){.spread{display:flex;flex-direction:column}.cover{width:155px;margin:0}header nav{gap:.7rem}main{padding-top:.4rem}.bar{align-items:start}.actions>*{max-width:100%}}
+</style>
+<a class="skip" href="#main" onclick="document.querySelector('main').focus();return false">Skip to content</a>
+<header><a class="mark" href="#home">Unseal</a><nav aria-label="Main"><a href="#campaign">Guide</a><a href="#receipt">Receipt</a><a href="#creator">Creator</a><a href="#reader">Reader</a></nav></header>
+<div class="bar"><span>Design walkthrough · Illustrative data · No wallet or transfers</span><label>Review scene <select id="scene"><option value="open">Funding open</option><option value="filled">Target reached</option><option value="released">Guide released</option><option value="expired">Funding deadline missed</option><option value="unreleased">Funded, release deadline missed</option><option value="cancelled">Creator cancelled</option></select></label></div>
+<main id="main" tabindex="-1"></main>
+<footer>All actions on this page are local simulations. Choose a review scene to reset the example. Live network verification, signatures and durable offline saving belong to the implementation.</footer>
+<script>
+const root=document.querySelector("main"),scene=document.querySelector("#scene");
+const title="Your first internship application";
+let state,returning=false;
+function reset(stage){state={stage,total:stage==="open"||stage==="expired"||stage==="cancelled"?3:5,mine:stage==="open"?0:2,claimed:false,saved:false,offline:false,bad:false,saveFailed:false,creatorSigned:false,reviewed:null,pending:null,unknown:false,amount:"2",connected:false};scene.value=stage}
+reset("open");
+const names={open:"Open for sponsorship",filled:"Fully funded. Waiting for release.",released:"Released for everyone",expired:"Funding ended below the target.",unreleased:"Fully funded, but the release deadline passed.",cancelled:"Creator cancelled this release."};
+const button=(to,label)=>'<a class="button" href="#'+to+'">'+label+'</a>';
+const action=(id,label,secondary=false)=>'<button data-do="'+id+'" class="'+(secondary?'secondary':'')+'">'+label+'</button>';
+const cover='<div class="cover" role="img" aria-label="Illustrated concept cover showing students reviewing their work"></div>';
+const sample='<aside class="note"><strong>From the guide</strong><p>Choose a class or club project. In three sentences, describe the problem, what you did and the result. This becomes one example for your application.</p></aside>';
+const terms='<dl><dt>Recipient</dt><dd>Dexter, guide publisher (illustrative wallet)</dd><dt>Funding closes</dt><dd>27 November 2026 at 18:00 EAT</dd><dt>Release closes</dt><dd>28 November 2026 at 18:00 EAT</dd><dt>Network and fees</dt><dd>Solana devnet test units have no cash value. No Unseal fee. Your wallet pays network and any account creation costs in devnet SOL.</dd></dl>';
+const meter=()=>'<p><strong>'+state.total+' of 5 test units funded</strong><br><progress value="'+state.total+'" max="5" aria-label="Funded test units"></progress></p>';
+const refundable=()=>["cancelled","expired","unreleased"].includes(state.stage);
+function validAmount(value) {
+ const amount = Number(value);
+ return typeof value === "string" && /^[1-9][0-9]*$/.test(value) &&
+   Number.isSafeInteger(amount) && amount > 0 && amount <= 5 - state.total;
+}
+function canPay() {
+ return state.stage === "open" && state.connected && state.pending === null &&
+   state.reviewed === state.amount && validAmount(state.amount);
+}
+function canClaim() {
+ return refundable() && state.connected && !state.claimed && state.mine > 0;
+}
+function pendingPanel() {
+ const message = state.unknown ? "Confirmation unavailable. Your contribution may still be pending." : "Waiting for confirmation.";
+ return '<p role="status">'+message+' No second payment is needed.</p><div class="actions">'+
+   action("confirm","Check example finalized result")+
+   (state.unknown?"":action("unknown","Simulate network timeout",true))+'</div>';
+}
+function readerClosed() {
+ return (refundable() ? outcome()+'<p>This guide closed without a verified release.</p>' :
+   '<p>The full guide is waiting for release.</p>')+button("campaign","Read the sample");
+}
+const outcome=()=>'<p class="status">'+names[state.stage]+'</p>';
+const pages={
+home:()=>'<div class="spread">'+cover+'<section><h1>A guide for your first internship application</h1><p>An illustrated English guide for Ethiopian university students preparing an application with experience they already have.</p>'+outcome()+button("campaign","View the guide")+sample+'</section></div>',
+campaign:()=>'<div class="spread">'+cover+'<article><h1>'+title+'</h1><p>By Dexter · Illustrated learning guide · CC BY 4.0</p>'+sample+outcome()+meter()+'<div class="actions">'+(state.stage==="open"?button("sponsor","Sponsor this release"):state.stage==="released"?button("reader","Open the independent reader"):button("receipt","View my receipt"))+'</div><h2>Inside the guide</h2><ol><li>Find a suitable opportunity</li><li>Turn one project into a clear example</li><li>Review your application checklist</li></ol><details><summary>Funding and refund terms</summary>'+terms+'<p>Contributions stay committed until release, a missed deadline or cancellation. Each eligible sponsor claims independently.</p></details></article></div>',
+sponsor:()=>'<article class="review panel"><h1>Help release this guide</h1>'+outcome()+(state.pending!==null?pendingPanel():state.stage!=="open"?button("campaign","View updated guide"):'<label for="amount">Your contribution in test units</label><input id="amount" type="text" inputmode="numeric" value=""><p class="small">Enter a positive whole number of test units for this example. '+(5-state.total)+' remain.</p><div class="actions">'+action("one","1 test unit",true)+action("two","2 test units",true)+'</div><p id="amount-error" role="alert" class="error"></p>'+terms+'<p>Your address and amount are public. Public name credit is optional. Contributions cannot be withdrawn early. Each sponsor can claim after a missed deadline or creator cancellation. Quality concerns after release do not qualify.</p>'+action("review","Review example contribution"))+'</article>',
+approval:()=>'<article class="review panel"><h1>Review contribution</h1><p>You are sponsoring '+title+' with <strong>'+Number(state.amount)+' test units</strong>.</p>'+terms+'<div class="actions">'+action("pay","Simulate wallet approval")+action("dismiss","Dismiss request",true)+'</div></article>',
+receipt:()=>'<article class="review panel"><h1>My receipt</h1>'+outcome()+(state.pending!==null?pendingPanel():!state.connected?action("connect","Use example sponsor wallet"):state.mine===0?'<p>This example wallet has no contribution to this campaign.</p>':'<p>Example wallet contribution: <strong>'+state.mine+' test units</strong>.</p>'+(state.claimed?'<p class="status">Refund claimed. No further amount is available.</p>':refundable()?button("refund","Review individual refund"):'<p>Your contribution is recorded. Return here to check its outcome.</p>'))+'<p><a href="#campaign">Return to the guide</a></p></article>',
+refund:()=>'<article class="review panel"><h1>Review refund</h1>'+outcome()+'<dl><dt>Amount</dt><dd>'+state.mine+' test units</dd><dt>Destination</dt><dd>Example sponsor wallet, original contributor on Solana devnet</dd><dt>Fees</dt><dd>No Unseal fee. The claiming wallet covers network and any required account costs in devnet SOL.</dd></dl><div class="actions">'+action("claim","Simulate individual refund")+button("receipt","Back to receipt")+'</div></article>',
+creator:()=>'<article class="review"><h1>Creator workspace</h1><section class="panel"><h2>'+title+'</h2>'+outcome()+meter()+terms+'<div class="actions">'+(state.stage==="filled"?button("release","Review release"):'')+(['open','filled'].includes(state.stage)?'<a href="#cancel">Review cancellation</a>':'')+'</div></section><details><summary>Review a draft campaign</summary><p>Review the completed guide, preview, rights, two mirrors, backup and fixed terms before publishing.</p>'+button("publish","Preview draft terms")+'</details></article>',
+publish:()=>'<article class="review panel"><h1>Publish fixed terms</h1><p>Example draft: '+title+', target 5 test units. The next action resets this walkthrough to an empty sample campaign. Once published, these payment terms are fixed.</p>'+terms+(state.creatorSigned?'<p>Creator signed. The pilot curator must approve these same terms before publication.</p>'+action("publish","Simulate curator co-signature and publication"):action("sign-draft","Simulate creator signature"))+'</article>',
+release:()=>'<article class="review panel"><h1>Release for everyone</h1>'+terms+'<p>Sending the release material can expose the guide even if payment fails. A finalized release pays the fixed recipient and makes verified reading available.</p>'+action("release","Simulate release")+'</article>',
+cancel:()=>'<article class="review panel"><h1>Cancel this campaign?</h1><p>'+state.total+' test units have been pledged. Cancellation closes funding and lets each sponsor claim independently. This action cannot be undone.</p><div class="actions">'+action("cancel","Simulate cancellation")+button("creator","Keep campaign")+'</div></article>',
+reader:()=>'<article class="reading"><h1>'+title+'</h1>'+(state.stage!=="released"?readerClosed():state.bad?'<p role="alert">This copy does not match the published file.</p>'+action("mirror","Try another example copy"):state.offline&&!state.saved?'<p>This device has no saved copy. Go online to verify and save the guide.</p>'+action("online","Simulate going online"):'<p class="status">'+(state.offline?"Offline · Previously verified example":"Verified file · Example result")+'</p><nav aria-label="Guide contents"><a href="#unit" onclick="document.getElementById(\'unit\').focus();return false">Read the project example</a></nav><h2 id="unit" tabindex="-1">Turn one project into a clear example</h2><p>A supervisor wants to understand your contribution. Start with one project where you can point to a result.</p><ol><li>Describe the problem in one sentence.</li><li>Name the action you took yourself.</li><li>Explain what changed and how you know.</li></ol><h2>Application checklist</h2><ul><li>Check the published requirements and deadline.</li><li>Include one specific example of your work.</li><li>Read the final application before sending.</li></ul><p>Illustrative lesson by Dexter · CC BY 4.0</p><div class="actions">'+(state.saved?'<span>Saved on this device (simulation)</span>':(state.saveFailed?'<p role="alert">Storage is full. Free space and retry. The online guide remains readable.</p>':'')+action("save",state.saveFailed?"Retry offline save":"Simulate offline save")+action("storage","Simulate full storage",true))+action(state.offline?"online":"offline",state.offline?"Simulate going online":"Simulate disconnection",true)+action("damage","Test a damaged copy",true)+'</div>')+'</article>'
+};
+function go(page){if(location.hash==="#"+page)render();else location.hash=page}
+function render(){let page=location.hash.slice(1)||"home";if(!Object.hasOwn(pages,page))page="home";if(page==="approval"&&!canPay())page="sponsor";if(page==="refund"&&!canClaim())page="receipt";if(page==="release"&&state.stage!=="filled")page="creator";if(page==="cancel"&&!["filled","open"].includes(state.stage))page="creator";root.innerHTML=pages[page]();const field=document.querySelector("#amount");if(field)field.value=state.amount;document.title=root.querySelector("h1").textContent+" · Unseal design";if(returning)root.focus();returning=true}
+scene.onchange=()=>{reset(scene.value);go("campaign")};
+root.addEventListener("input",e=>{if(e.target.id==="amount"){state.amount=e.target.value;state.reviewed=null}});
+root.addEventListener("click",e=>{
+ const id=e.target.closest("[data-do]")?.dataset.do;if(!id)return;
+ switch(id){
+ case "one":case "two":state.amount=id==="one"?"1":"2";render();document.querySelector("#amount").focus();break;
+ case "review":if(!validAmount(state.amount)){const f=document.querySelector("#amount");document.querySelector("#amount-error").textContent="Enter a whole amount from 1 to "+(5-state.total)+" test units.";f.setAttribute("aria-invalid","true");f.setAttribute("aria-describedby","amount-error");f.focus();break}if(state.stage!=="open"||state.pending!==null)break;state.connected=true;state.reviewed=state.amount;go("approval");break;
+ case "dismiss":state.reviewed=null;go("sponsor");break;
+ case "pay":
+   if(!canPay()){go("sponsor");break}
+   state.pending=state.amount;state.reviewed=null;go("receipt");break;
+ case "unknown":
+   if(state.pending!==null)state.unknown=true;
+   render();break;
+ case "confirm":
+   if(state.pending===null)break;
+   if(state.stage==="open"&&state.connected&&validAmount(state.pending)){
+     state.mine+=Number(state.pending);state.total+=Number(state.pending);
+     if(state.total===5)scene.value=state.stage="filled";
+   }
+   state.pending=null;state.unknown=false;go("receipt");break;
+ case "connect":state.connected=true;render();break;
+ case "claim":if(canClaim())state.claimed=true;go("receipt");break;
+ case "sign-draft":state.creatorSigned=true;render();break;
+ case "publish":if(!state.creatorSigned)break;reset("open");state.total=0;go("campaign");break;
+ case "release":if(state.stage==="filled")scene.value=state.stage="released";go("campaign");break;
+ case "cancel":if(["open","filled"].includes(state.stage))scene.value=state.stage="cancelled";go("campaign");break;
+ case "storage":state.saveFailed=true;render();break;
+ case "save":state.saved=true;state.saveFailed=false;render();break;
+ case "offline":state.offline=true;render();break;
+ case "online":state.offline=false;render();break;
+ case "damage":state.bad=true;render();break;
+ case "mirror":state.bad=false;render();break;
+ }});
+window.addEventListener("hashchange",render);render();
+</script>
+</html>
