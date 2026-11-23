@@ -71,5 +71,5 @@ Initial direct-dependency inventory, inspected against the package manifests and
 | anchor-lang | 1.2.2, account constraints and instruction entry points | Apache-2.0 in installed crate manifest. [Upstream](https://github.com/otter-sec/anchor) |
 | anchor-spl | 1.2.2, classic token transfers and vault initialization | Apache-2.0 in installed crate manifest. [Upstream](https://github.com/otter-sec/anchor) |
 | solana-sha256-hasher | 3.1.0, publication commitment | Apache-2.0 in installed crate manifest. [Upstream](https://github.com/anza-xyz/solana-sdk) |
-| solders | 0.29.0, Python compiled-program test harness; test environment only | Record exact distribution notice before redistributing any test environment. [Package](https://pypi.org/project/solders/0.29.0/) |
+| solders | 0.29.0, Python compiled-program test harness; test environment only | Apache-2.0 verified in licenses/LICENSE from the installed wheel. Preserve that file and applicable notices if redistributing the test environment. [Package](https://pypi.org/project/solders/0.29.0/) |
 | Browser libraries and fonts | Candidates in sections 27 and 31 | Exact browser dependency set and font files remain **UNVERIFIED** until locked. Record each source, version, file license, size and notice in the first browser dependency PR. |
