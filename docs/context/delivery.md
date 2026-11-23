@@ -34,7 +34,7 @@ Highest schedule risk is the combined browser-wallet and offline path. Exercise 
 | R4 | Supply wrong campaign, truncated ciphertext, altered metadata, unsupported version or malformed plaintext | Fail closed, keep last known good cache, no unsafe rendering | Parser fixtures |
 | U1 | Keyboard-only and mobile zoom walkthrough from preview to receipt, reader and refund | Visible focus, meaningful heading/order/status, no trapped focus or hidden primary action; amount and deadlines comprehensible | Manual device pass |
 | P1 | Disable recognition, refuse optional feedback, visit as a guest | Public amounts still visible, no name displayed, guest reads without sign-in | Browser, storage/log check |
-| P2 | Try unpublished or unauthorised listing; withdraw an admitted creator from future publishing | Curated discovery reflects admission, existing refunds and independently released content remain accessible | Integration |
+| P2 | Try unpublished or unauthorised listing; withdraw an admitted creator from future publishing | Remove a campaign from the active catalog. Reload its direct link from a clean profile, reject new sponsorship in the official app, finalize an eligible claim through historical config and independently open a delisted released lesson | Integration |
 | J1 | Open all submission links from logged-out browser and follow demo | Program ID, signature, live reader, video and documented commands match the submitted revision | Rehearsal |
 
 For each run record commit, cluster, command or manual steps, start time, versions, expected and actual outcome, pass/fail/skip counts and links. A screenshot of an enabled action cannot establish a transfer. Retain counterexamples and reproduce them after fixing the cause.
