@@ -20,3 +20,20 @@ jobs:
         run: cargo test --workspace --locked
       - name: Host lint
         run: cargo clippy --workspace --all-targets --locked -- -D warnings
+
+  sbf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Solana build tools
+        run: |
+          curl --fail --location --retry 3 https://release.anza.xyz/v4.4.1/install -o /tmp/unseal-agave-install.sh
+          sh /tmp/unseal-agave-install.sh
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+      - name: Build original Solana program
+        run: cargo-build-sbf --manifest-path programs/unseal/Cargo.toml --sbf-out-dir target/deploy -- --locked
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unseal-sbf
+          path: target/deploy/unseal.so
+          if-no-files-found: error
