@@ -28,7 +28,7 @@ The published rubric covers Product and Technical signals. No official numerical
 
 ## Next product decision
 
-Which single resource leads the demonstration? Recommended: a short illustrated English guide for Ethiopian university students, combining practical learning with original creative presentation. Its exact subject, author, public license, preview, target and deadlines remain pending. Further application implementation follows confirmation of the product brief.
+Dexter approved the recommended practical learning pack and authorized Phase 1 implementation. Provisional subject selected for the initial demo: Your first internship application, an English guide with original illustrations for Ethiopian university students. Final public license, content review and actual campaign deadlines must be fixed before publication. Devnet examples may use five test units split across two sponsors. See architecture.md for the implementation and judging-evidence map.
 
 ## Research provenance
 

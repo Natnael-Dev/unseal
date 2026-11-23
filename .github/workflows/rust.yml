@@ -1,0 +1,44 @@
+name: Rust checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  host:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned host Rust
+        run: rustup toolchain install 1.98.0 --profile minimal --component rustfmt --component clippy
+      - name: Format
+        run: cargo fmt --all -- --check
+      - name: Host tests
+        run: cargo test --workspace --locked
+      - name: Host lint
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+
+  sbf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Solana build tools
+        run: |
+          curl --fail --location --retry 3 https://release.anza.xyz/v4.4.1/install -o /tmp/unseal-agave-install.sh
+          sh /tmp/unseal-agave-install.sh
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+      - name: Build original Solana program
+        run: cargo-build-sbf --manifest-path programs/unseal/Cargo.toml --sbf-out-dir target/deploy -- --locked
+      - name: Execute compiled program scenarios
+        run: |
+          python3 -m venv /tmp/unseal-vm
+          /tmp/unseal-vm/bin/pip install solders==0.29.0
+          /tmp/unseal-vm/bin/python tests/program_vm.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: unseal-sbf
+          path: target/deploy/unseal.so
+          if-no-files-found: error
