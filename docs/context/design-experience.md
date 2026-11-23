@@ -74,7 +74,7 @@ For home, enlarge the book feature and surface the useful sample without a walle
 
 ## 20. Prototype rehearsal
 
-Use the walkthrough's “Review scene” selector to choose a labeled fixture. Under “Funding open,” contribute two example units, open Creator, review release, and follow the independent reader link. Under “Deadline missed,” open Receipt, use the example wallet and claim. The prototype runs locally and resets on reload. Use a separate browser profile for the unrelated learner when testing the implemented product. Real wallet operations, persistent offline recovery, concurrency and a live end-to-end recording require separate evidence.
+Use the walkthrough's “Review scene” selector to choose a labeled fixture. Under “Funding open,” contribute two example units, open Creator, review release, and follow the independent reader link. Test “Funding deadline missed” and “Funded, release deadline missed” separately. In each, open Receipt, use the example wallet, review the exact refund amount, destination and fees, and claim. Before finalizing a contribution, simulate a network timeout and reconcile the same payment. In Reader, simulate full storage and retry the save. In Creator, preview draft terms, sign as the example creator and co-sign as the pilot curator. The prototype runs locally and resets on reload. Use a separate browser profile for the unrelated learner when testing the implemented product. Real wallet operations, persistent offline recovery, concurrency and a live end-to-end recording require separate evidence.
 
 | Scene | Reviewer action | What the reviewer must see |
 |---|---|---|
