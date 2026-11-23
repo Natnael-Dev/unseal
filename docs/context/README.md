@@ -2,7 +2,7 @@
 
 ## 69. Context index and working instructions
 
-Start with the product and experience. Follow one learner from preview to reading, one sponsor from contribution to receipt or refund, and one creator through release or cancellation. Then review the technical contracts in the same order as the data flows. The chapter numbers match the original 70-item inventory.
+Open the [clickable design walkthrough](../design/walkthrough.html) locally. Its controls simulate scenarios using test units. Then read the product and experience documents. Follow one learner from preview to reading, one sponsor from contribution to receipt or refund, and one creator through release or cancellation. Then review the technical contracts in the same order as the data flows. The chapter numbers match the original 70-item inventory.
 
 | Read | Chapters | Use this for |
 |---|---|---|
