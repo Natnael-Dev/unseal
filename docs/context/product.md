@@ -67,7 +67,7 @@ The number is the original questionnaire item. Exact transaction limits, dates, 
 | 7 | CC BY 4.0 for original publication assets | Include attribution and license in preview, pack and reader. |
 | 8 | Public cover, contents and sample | Use a real excerpt from the same edition. |
 | 9 | Display name, short introduction, rights statement and optional profile | A profile link is optional. Public identity is self-described. |
-| 10 | Invited creators | Curate the pilot manually. Invitation controls listings, not access to public chain instructions. |
+| 10 | Invited creators | The curator approves each official creation. Require the curator and creator signatures on the pilot creation instruction. Reading and settlement stay independent. |
 | 11 | Alumni and university clubs first | Tailor sponsor copy and feedback outreach to those groups. |
 | 12 | Optional public recognition | Get explicit opt-in. Recognition confers no exclusive reading rights. |
 | 13 | Flexible amounts with a small minimum and suggested amounts | Show exact mint units and remaining capacity. For the zero-decimal demo mint, one base unit is the minimum and the smallest remaining gap is always fillable. |

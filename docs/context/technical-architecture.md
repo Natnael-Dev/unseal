@@ -23,7 +23,7 @@ Keep the catalog, public preview, wallet application and wallet-free reader depl
 | Decision | Tradeoff and revisit trigger |
 |---|---|
 | Fixed creator, test mint, exact cap, individual refunds | No oversubscription, pro-rata accounting or batch payout. Revisit only with a new program/product decision. |
-| Permissionless on-chain creation, manual admission to official catalog | An outside wallet can create an unrelated campaign. Display a verified pilot label only for listed program/network/address combinations. Strict protocol-level admission would need a separate design and deployment. |
+| Admitted creators on the pilot deployment, separately curated catalog | Baseline creation is permissionless. Before deploying the pilot, require the configured curator to co-sign creation with the creator. No curator signature for release, cancellation, pledges or refunds. A separate deployment can have its own rules. |
 | Sponsor invitation handled operationally | Distribute official pilot links and test units to invitees. The public reader needs neither. Possession of a copied link or compatible devnet tokens is possible. Do not describe this as enforceable identity or spending control. |
 | Two independent copies + local import | Creator supplies both copies before opening sponsorship. Replacing a host preserves terms when bytes match. If both are lost an uncached reader cannot recover the guide from the chain. |
 | Browser decryption and opt-in local caching | No wallet or app account for readers. First verification needs connectivity. Private browsing, storage eviction and device loss can erase files. |
