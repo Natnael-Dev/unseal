@@ -15,3 +15,11 @@ Review the intended product against all 35 approved choices and all 70 areas. Ex
 | Submission | Public repo, repeatable build, live links, video, roster and confirmation | UNVERIFIED |
 
 A planning pass authorizes engineering to work from these contracts. Publishing the lesson, operating a real-money service or entering the event requires separate evidence and the applicable owner actions.
+
+### How to verify the planning pack
+
+From the repository root run the following command. It checks section and decision counts, local Markdown links, and whitespace against the Phase 1 baseline. It does not exercise wallets, the program or the prototype.
+
+```powershell
+pwsh -NoProfile -File docs/context/verify.ps1
+```
