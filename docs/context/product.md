@@ -169,4 +169,3 @@ Public wallet addresses, transactions, amounts, timing and campaign links can be
 | Devnet, faucet or fees block the demo | Demo lead | Fund test accounts early, retain dated genuine evidence and distinguish recordings from a live attempt. |
 | Reach expands beyond support capacity or free quota | Dexter | Limit invited intake, monitor provider limits and verify contact before wider distribution. |
 | Deadline compresses verification | Dexter | Prioritize one finished guide, sponsorship, verified independent reading and refunds. Record missed evidence explicitly. |
-

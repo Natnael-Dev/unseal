@@ -1,5 +1,7 @@
 # Unseal architecture and delivery plan
 
+Historical Phase 1 plan. The [approved implementation context](context/README.md) supersedes provisional product, interface and licensing choices here. Use the [Phase 1 record](phase-1-status.md) for existing implementation evidence.
+
 23 November 2026. Phase 1 implementation started. Choices below assume a browser entry for the overall track and devnet test funds. Resource working title: **Your first internship application**, a short English learning pack for Ethiopian university students using original writing and illustrations. This is a reversible editorial choice. Initial pack is builder-authored and clearly labeled. Final public license and content review must be recorded before release.
 
 ## Technology choices

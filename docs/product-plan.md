@@ -1,5 +1,7 @@
 # Unseal product plan
 
+Historical Phase 1 plan. The [approved implementation context](context/README.md) supersedes provisional product, interface and licensing choices here. Use the [Phase 1 record](phase-1-status.md) for existing implementation evidence.
+
 Decisions confirmed by Dexter on 23 November 2026.
 
 - Name: Unseal.
