@@ -63,3 +63,13 @@ Open a PR with objective, affected user journeys/terms, test commands + exit/cou
 MIT applies to original code after adding the approved license text and verified copyright credit. CC BY 4.0 applies to the cleared guide, illustrations and its public sample; use explicit scope in the root README and attribution in exports. Third-party components, fonts and third-party assets retain their own terms. An MIT root license cannot automatically relicense a dependency or another author's illustration. Require rights records and reviewed usage/attribution for each external asset before publication. Original illustrations avoid extra rights ambiguity.
 
 Use native APIs where sufficient. Every direct dependency needs a concrete use, pinned compatible version/lockfile, source URL, license expression, redistribution obligations and update owner. Inspect transitive notices in shipping artifacts; preserve font and library licenses where redistribution requires them. Record dependency verification date and unresolved restrictions; replace anything with unclear rights rather than guessing. Before changing Anchor/Agave/web3.js regenerate IDL, compare account layout, build the compiled program and rerun VM, browser wallet and byte-vector checks. Purchase/paid hosting remains outside the zero-spend pilot.
+
+Initial direct-dependency inventory, inspected against the package manifests and lockfile on 24 November. Dexter owns the release notice inventory. Capture upstream LICENSE and any applicable NOTICE alongside the distribution, preserve copyright notices and identify modifications. Recheck transitive components against the actual build before distribution.
+
+| Dependency | Version / purpose | Provenance and release action |
+|---|---|---|
+| anchor-lang | 1.2.2, account constraints and instruction entry points | Apache-2.0 in installed crate manifest. [Upstream](https://github.com/otter-sec/anchor) |
+| anchor-spl | 1.2.2, classic token transfers and vault initialization | Apache-2.0 in installed crate manifest. [Upstream](https://github.com/otter-sec/anchor) |
+| solana-sha256-hasher | 3.1.0, publication commitment | Apache-2.0 in installed crate manifest. [Upstream](https://github.com/anza-xyz/solana-sdk) |
+| solders | 0.29.0, Python compiled-program test harness; test environment only | Record exact distribution notice before redistributing any test environment. [Package](https://pypi.org/project/solders/0.29.0/) |
+| Browser libraries and fonts | Candidates in sections 27 and 31 | Exact browser dependency set and font files remain **UNVERIFIED** until locked. Record each source, version, file license, size and notice in the first browser dependency PR. |
